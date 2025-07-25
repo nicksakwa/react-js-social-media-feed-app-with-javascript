@@ -34,6 +34,20 @@ function App(){
   ];
 
   return (
-    
-  )
+    <div className="App">
+      <header className="App-header">
+        <h1>Social media Feed</h1>
+      </header>
+      <div className="post-container">
+        {posts.map(post =>(
+          <Post
+            key={post.postId}
+            {...post}
+            />
+        ))}
+      </div>
+    </div>
+  );
 }
+
+export default App;
