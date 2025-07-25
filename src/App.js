@@ -1,17 +1,19 @@
-import React from 'react':
-import './App.css';
-import Post from './Post';
+// social-media-feed/src/App.js
+import React from 'react';
+import './App.css'; // Existing App.css
+import Post from './Post'; // Import your Post component
 
-function App(){
-  const posts=[
+function App() {
+  // Define some example post data
+  const posts = [
     {
       postId: 'post-abc-1',
-      authorName:'Alice Johnson',
+      authorName: 'Alice Johnson',
       authorProfilePic: 'https://randomuser.me/api/portraits/women/1.jpg',
-      postText:'Enjoying a beautiful  sunset  at the beach! So peaceful.',
-      postImage:'https://images.unsplash.com/photo-1507525428034-b723cf961fac?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+      postText: 'Enjoying a beautiful sunset at the beach! 🌅 So peaceful.',
+      postImage: 'https://images.unsplash.com/photo-1507525428034-b723cf961fac?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       initialLikes: 25,
-      timestamp:   '3 hours ago'
+      timestamp: '3 hours ago'
     },
     {
       postId: 'post-def-2',
@@ -36,14 +38,14 @@ function App(){
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Social media Feed</h1>
+        <h1>My Social Media Feed</h1>
       </header>
-      <div className="post-container">
-        {posts.map(post =>(
+      <div className="posts-container">
+        {posts.map(post => (
           <Post
-            key={post.postId}
-            {...post}
-            />
+            key={post.postId} // Always provide a unique key when mapping lists
+            {...post} // Spread all post properties as props
+          />
         ))}
       </div>
     </div>
