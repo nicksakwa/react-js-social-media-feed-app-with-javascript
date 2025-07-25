@@ -63,3 +63,55 @@ const handleAddComment=()=>{
     setNewCommentText('');
     console.log('[ACTION] Sending new comment to backend for post ID {props.postid}: "${newComment.text}"');
 };
+return(
+    <div className="post-card">
+        <div className="post-header">
+            <img src={props.authorProfilePic || 'https://via.placeholder.com/40*40?text='} alt="Profile" className="profile-pic" />
+            <div className="header-info">
+                <span className="author-name">{props.authorName}</span>
+                <span className="timestamp">{props.timestamp}</span>
+            </div>
+        </div>
+        <div className="post-content">
+            <p>{props.postText}</p>
+            {props.postImage && <img src={props.postImage} alt="Post content" className="post-image" />}
+        </div>
+        <div className="post-actions">
+            <button
+                onClick={handleLikeClick}
+                className={'like-button ${isLiked ? 'Liked' : ''}'}
+            >
+                {isLiked ? 'Liked' : 'Like'}({LikesCount})
+            </button>
+        </div>  
+        <div className="comments-section">
+            <h4>Comments</h4>
+            {comments.length === 0 ?(
+                <p>No commentsyet.</p>
+            ):(
+                comments.map(comment)=>(
+                    <p key={comment.id}>
+                        <b>{comment.author}:</b> {comment.text}
+                    </p>
+                ))
+            )}
+            <div className="comment-input-area">
+                <input 
+                    type="text"
+                    placeholder="Write a comment..."
+                    value={newCommentText}
+                    onChange={(e)=> setNewCommentText(e.target.value)}
+                    onKeyPress={(e)=>{
+                        if(e.key === 'Enter'){
+                            handleAddComment():
+                        }
+                    }}
+                />
+                <button onClick={handleAddComment}>Post Comment</button>
+            </div>
+        </div>
+    </div>
+    };
+}
+
+export default Post;
