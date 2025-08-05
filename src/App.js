@@ -1,4 +1,3 @@
-// social-media-feed/src/App.js
 import React from 'react';
 import './App.css'; // Existing App.css
 import Post from './Post'; // Import your Post component
@@ -11,6 +10,7 @@ function App() {
       authorName: 'Alice Johnson',
       authorProfilePic: 'https://randomuser.me/api/portraits/women/1.jpg',
       postText: 'Enjoying a beautiful sunset at the beach! 🌅 So peaceful.',
+      // Add a post image URL for Alice Johnson's post
       postImage: 'https://images.unsplash.com/photo-1507525428034-b723cf961fac?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       initialLikes: 25,
       timestamp: '3 hours ago'
@@ -20,7 +20,8 @@ function App() {
       authorName: 'Bob Williams',
       authorProfilePic: 'https://randomuser.me/api/portraits/men/2.jpg',
       postText: 'Just finished my morning run! Feeling great. 💪 #fitness',
-      postImage: null, // No image for this post
+      // Add a post image URL for Bob Williams' post
+      postImage: 'https://images.unsplash.com/photo-1517836357463-d262fe253880?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       initialLikes: 10,
       timestamp: '1 hour ago'
     },
@@ -43,8 +44,8 @@ function App() {
       <div className="posts-container">
         {posts.map(post => (
           <Post
-            key={post.postId} // Always provide a unique key when mapping lists
-            {...post} // Spread all post properties as props
+            key={post.postId}
+            {...post}
           />
         ))}
       </div>
