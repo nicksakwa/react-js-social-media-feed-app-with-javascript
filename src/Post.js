@@ -1,80 +1,83 @@
+// social-media-feed/src/Post.js
 import React, { useState, useEffect } from 'react';
-import './Post.css'; 
+import './Post.css';
 
 function Post(props) {
     const [likesCount, setLikesCount] = useState(props.initialLikes || 0);
     const [isLiked, setIsLiked] = useState(false);
     const [comments, setComments] = useState([]);
     const [showCommentInput, setShowCommentInput] = useState(false);
-    const [newCommentText, setNewCommentText] = useState(''); // State for the new comment input
+    const [newCommentText, setNewCommentText] = useState('');
+    const [isFollowing, setIsFollowing] = useState(props.isFollowing || false); // New state for follow status
 
-    // Effect 1: Log when the component mounts and unmounts
-    useEffect(() => {
-        console.log(`Post "${props.postText.substring(0, Math.min(props.postText.length, 20))}..." (ID: ${props.postId}) has been mounted.`);
-
-        // Cleanup function: runs when the component unmounts
-        return () => {
-            console.log(`Post "${props.postText.substring(0, Math.min(props.postText.length, 20))}..." (ID: ${props.postId}) has been unmounted.`);
-        };
-    }, [props.postId, props.postText]); // Dependency array: run if postId or postText changes
-
-    // Effect 2: Simulate updating the backend when likesCount changes
-    useEffect(() => {
-        // Only run if likesCount has actually changed from its initial prop value
-        // or if it's not the very first render and it's different from the initial value
-        // A more robust check might involve an initial mount flag or a ref
-        if (typeof props.initialLikes !== 'undefined' && likesCount !== props.initialLikes) {
-            console.log(`[EFFECT] Updating backend with new like count for post ID ${props.postId}: ${likesCount}`);
-            // In a real application, you'd make an API call here:
-            // api.updatePostLikes(props.postId, likesCount);
-        } else if (typeof props.initialLikes === 'undefined' && likesCount > 0) {
-             // For posts starting with 0 likes and then increasing
-             console.log(`[EFFECT] Updating backend with new like count for post ID ${props.postId}: ${likesCount}`);
-        }
-    }, [likesCount, props.postId, props.initialLikes]); // Dependencies ensure it runs when these values change
-
-    // Effect 3: Fetch comments for the post when the component mounts or postId changes
+    // Effect 1: Fetch comments (remains the same)
     useEffect(() => {
         const fetchComments = async () => {
             console.log(`[EFFECT] Fetching comments for post ID: ${props.postId}`);
-            // Simulate an API call
             try {
                 const response = await new Promise(resolve => setTimeout(() => {
-                    // Dummy comments, could be different for different post IDs if you expand this
                     const dummyComments = [
                         { id: 101, author: 'Alice', text: 'Great photo!' },
                         { id: 102, author: 'Bob', text: 'Looks like fun!' }
                     ];
                     resolve(dummyComments);
-                }, 700)); // Simulate 700ms delay for fetching comments
+                }, 700));
                 setComments(response);
             } catch (error) {
                 console.error("Error fetching comments:", error);
             }
         };
 
-        if (props.postId) { // Only fetch if postId exists
+        if (props.postId) {
             fetchComments();
         }
-    }, [props.postId]); // Runs only when postId changes (or once on mount if postId doesn't change)
+    }, [props.postId]);
 
+
+    // New Event Handler for the follow button
+    const handleFollowClick = async () => {
+        // Optimistically update the UI first
+        const newFollowStatus = !isFollowing;
+        setIsFollowing(newFollowStatus);
+        
+        console.log(`[ACTION] User is now ${newFollowStatus ? 'following' : 'unfollowing'} ${props.authorName}`);
+        
+        // This is the side effect: an API call to your backend
+        try {
+            // Simulate an API call to follow/unfollow the user
+            const response = await new Promise(resolve => setTimeout(() => {
+                console.log(`[API CALL] API request sent to ${newFollowStatus ? 'follow' : 'unfollow'} user ${props.authorName}`);
+                // In a real app, you would get a success/failure response here
+                resolve({ success: true });
+            }, 500));
+
+            if (!response.success) {
+                console.error("API call failed, reverting UI.");
+                setIsFollowing(!newFollowStatus); // Revert UI on failure
+            }
+
+        } catch (error) {
+            console.error("Error during follow API call:", error);
+            setIsFollowing(!newFollowStatus); // Revert UI on network error
+        }
+    };
+    
+    // ... (other handlers like handleLikeClick and handleAddComment remain the same)
 
     const handleLikeClick = () => {
         if (isLiked) {
-            setLikesCount(prevCount => prevCount - 1); // Use functional update for state
+            setLikesCount(prevCount => prevCount - 1);
         } else {
             setLikesCount(prevCount => prevCount + 1);
         }
-        setIsLiked(!isLiked); // Toggle liked status
+        setIsLiked(!isLiked);
     };
 
     const handleAddComment = () => {
-        if (newCommentText.trim() === '') return; // Don't add empty comments
-
+        if (newCommentText.trim() === '') return;
         const newComment = { id: Date.now(), text: newCommentText.trim(), author: 'You' };
-        setComments(prevComments => [...prevComments, newComment]); // Use functional update
-        setNewCommentText(''); // Clear input
-        // In a real app, you'd also send this new comment to the backend
+        setComments(prevComments => [...prevComments, newComment]);
+        setNewCommentText('');
         console.log(`[ACTION] Sending new comment to backend for post ID ${props.postId}: "${newComment.text}"`);
     };
 
@@ -87,6 +90,16 @@ function Post(props) {
                     <span className="timestamp">{props.timestamp}</span>
                 </div>
             </div>
+
+            {/* New Follow Button */}
+            <button
+                onClick={handleFollowClick}
+                className={`follow-button ${isFollowing ? 'following' : ''}`}
+            >
+                {isFollowing ? 'Following' : 'Follow'}
+            </button>
+
+            {/* ... rest of the JSX remains the same ... */}
             <div className="post-content">
                 <p>{props.postText}</p>
                 {props.postImage && <img src={props.postImage} alt="Post content" className="post-image" />}
